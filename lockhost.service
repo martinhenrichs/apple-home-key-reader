@@ -1,0 +1,16 @@
+[Unit]
+Description=Home Key Lockhost (N virtual locks + one PN532)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Environment=LOCKHOST_DIR=/opt/apple-home-key-reader
+WorkingDirectory=/opt/apple-home-key-reader
+ExecStart=/opt/apple-home-key-reader/venv/bin/python lockhost.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

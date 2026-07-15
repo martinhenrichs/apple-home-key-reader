@@ -73,6 +73,9 @@ class Service:
         """This method will be called when an endpoint is authenticated"""
         # Currently overwritten by accessory.py
 
+    def on_nfc_tag(self, uid_hex):
+        """This method will be called when a non-HomeKey NFC tag is read"""
+
     def start(self):
         self._runner = create_runner(
             name="homekey",
@@ -95,8 +98,7 @@ class Service:
         for issuer in issuers.values():
             if issuer.public_key in issuer_public_keys:
                 continue
-            log.info(f"Removing issuer {issuer} as their pairing has been removed")
-            self.repository.remove_issuer(issuer)
+            log.info(f"Pairing removed for issuer {issuer.public_key.hex()} - keeping enrolled cards in homekey.json")
 
         for issuer_public_key in issuer_public_keys:
             if issuer_public_key in issuers:
@@ -126,6 +128,7 @@ class Service:
             log.info(
                 f"Found non-ISODEP Tag with UID: {target.identifier.hex().upper()}"
             )
+            self.on_nfc_tag(target.identifier.hex())
             while self.clf.sense(RemoteTarget("106A")) is not None:
                 log.info("Waiting for target to leave the field...")
                 time.sleep(0.5)

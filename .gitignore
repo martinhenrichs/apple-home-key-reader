@@ -24,6 +24,11 @@ accessory.state
 homekey.json
 hap.state
 
+# Lockhost state (keys! never commit)
+locks/
+*.state
+*.homekey.json
+
 # IDE's
 .idea/*
 .vscode/*
